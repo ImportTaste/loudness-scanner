@@ -47,7 +47,7 @@ if(GLIB20_FOUND AND GTHREAD20_FOUND AND NOT DISABLE_GLIB20)
   target_link_libraries(loudness
         scanner-lib filetree input
         ${GLIB20_LIBRARIES} ${GTHREAD20_LIBRARIES})
-
+  install(TARGETS loudness DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 
   if(SNDFILE_FOUND AND NOT DISABLE_SNDFILE)
