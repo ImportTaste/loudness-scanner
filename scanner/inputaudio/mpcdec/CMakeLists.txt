@@ -17,6 +17,7 @@ if(GMODULE20_FOUND AND MPCDEC_FOUND AND
   add_library(input_musepack MODULE input_mpcdec.c)
 
   target_link_libraries(input_musepack ${MPCDEC_LIBRARIES})
+  install(TARGETS input_musepack DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
   list(APPEND INPUT_MPCDEC_CFLAGS  ${GMODULE20_CFLAGS})
   list(APPEND INPUT_MPCDEC_LDFLAGS ${GMODULE20_LDFLAGS})

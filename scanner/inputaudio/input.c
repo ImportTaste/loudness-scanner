@@ -21,6 +21,8 @@ static const char* plugin_search_dirs[] = {
   "r128",
   "",
   NULL, /* = g_path_get_dirname(av0); */
+  "/usr/local/lib",
+  "/usr/lib",
   NULL
 };
 
