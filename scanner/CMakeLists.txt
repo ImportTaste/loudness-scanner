@@ -40,7 +40,7 @@ if(GLIB20_FOUND AND GTHREAD20_FOUND AND NOT DISABLE_GLIB20)
   add_subdirectory(scanner-drop-qt)
 
 
-  add_library(scanner-lib scanner-scan scanner-dump)
+  add_library(scanner-lib scanner-scan scanner-dump scanner-analyse)
   target_link_libraries(scanner-lib scanner-common ebur128)
 
   add_executable(loudness scanner)

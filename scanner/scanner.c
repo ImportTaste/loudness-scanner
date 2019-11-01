@@ -19,13 +19,14 @@
 #include "scanner-tag.h"
 #endif
 #include "scanner-dump.h"
+#include "scanner-analyse.h"
 #include "scanner-common.h"
 
 /* knobs: USE_TAGLIB, USE_SNDFILE */
 
 
 static void print_help(void) {
-    printf("Usage: loudness scan|tag|dump|--version [OPTION...] [FILE|DIRECTORY]...\n");
+    printf("Usage: loudness scan|tag|dump|analyse|--version [OPTION...] [FILE|DIRECTORY]...\n");
     printf("\n");
     printf("`loudness' scans audio files according to the EBU R128 standard. It can output\n");
 #ifdef USE_TAGLIB
@@ -49,7 +50,9 @@ static void print_help(void) {
 #ifdef USE_TAGLIB
     printf("  tag                        tag files with ReplayGain conformant tags\n");
 #endif
-    printf("  dump                       output momentary/shortterm/integrated loudness\n");
+    printf("  dump                       output one of momentary/shortterm/integrated loudness\n");
+    printf("                             in fixed intervals\n");
+    printf("  analyse                    output all (momentary, shortterm and integrated) loudness\n");
     printf("                             in fixed intervals\n");
     printf("\n");
     printf(" Global options:\n");
@@ -82,6 +85,10 @@ static void print_help(void) {
     printf("  -m, --momentary=INTERVAL   print momentary loudness every INTERVAL seconds\n");
     printf("  -s, --shortterm=INTERVAL   print shortterm loudness every INTERVAL seconds\n");
     printf("  -i, --integrated=INTERVAL  print integrated loudness every INTERVAL seconds\n");
+    printf("\n");
+    printf(" Analyse options:\n");
+    printf("  -i, --interval=INTERVAL    print momentary, shortterm and integrated loudness every INTERVAL seconds\n");
+    printf("  -l, --pklevels             print peaks using level mode\n");
 }
 
 static gboolean recursive = FALSE;
@@ -112,7 +119,8 @@ enum modes
 {
     LOUDNESS_MODE_SCAN,
     LOUDNESS_MODE_TAG,
-    LOUDNESS_MODE_DUMP
+    LOUDNESS_MODE_DUMP,
+    LOUDNESS_MODE_ANALYSE
 };
 
 int main(int argc, char *argv[])
@@ -136,6 +144,9 @@ int main(int argc, char *argv[])
     } else if (!strcmp(argv[1], "dump")) {
         mode = LOUDNESS_MODE_DUMP;
         mode_parsed = loudness_dump_parse(&argc, &argv);
+    } else if (!strcmp(argv[1], "analyse")) {
+        mode = LOUDNESS_MODE_ANALYSE;
+        mode_parsed = loudness_analyse_parse(&argc, &argv);
     } else if (!strcmp(argv[1], "--version")) {
         print_version();
         exit(EXIT_SUCCESS);
@@ -177,6 +188,9 @@ int main(int argc, char *argv[])
 #endif
         case LOUDNESS_MODE_DUMP:
         ret = loudness_dump(files);
+        break;
+        case LOUDNESS_MODE_ANALYSE:
+        ret = loudness_analyse(files);
         break;
     }
 
