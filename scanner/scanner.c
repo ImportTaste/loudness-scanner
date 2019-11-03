@@ -88,6 +88,7 @@ static void print_help(void) {
     printf("\n");
     printf(" Analyse options:\n");
     printf("  -i, --interval=INTERVAL    print momentary, shortterm and integrated loudness every INTERVAL seconds\n");
+    printf("  -s, --scale=FACTOR         scale input with this FACTOR. default = 1.0 (=off)\n");
     printf("  -l, --pklevels             print peaks using level mode\n");
 }
 

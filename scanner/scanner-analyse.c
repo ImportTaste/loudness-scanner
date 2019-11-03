@@ -14,11 +14,13 @@
 extern gboolean verbose;
 static gboolean pkLevels = FALSE;
 static double interval = 1.0;
+static double inputscale = 1.0;
 extern gchar *decode_to_file;
 
 static GOptionEntry entries[] =
 {
     { "interval", 'i', 0, G_OPTION_ARG_DOUBLE, &interval, NULL, NULL },
+    { "scale",    's', 1, G_OPTION_ARG_DOUBLE, &inputscale, NULL, NULL },
     { "pklevels", 'l', 0, G_OPTION_ARG_NONE, &pkLevels, NULL, NULL },
     { NULL, 0, 0, G_OPTION_ARG_NONE, NULL, NULL, 0 }
 };
@@ -132,6 +134,11 @@ static void dump_loudness_info(struct filename_list_node *fln, int *ret)
             if (frames_counter + nr_frames_read >= frames_needed) {
                 const double t = (double)frame_i_counter / (double)srate;
                 frame_i_counter += frames_counter + nr_frames_read;
+                if (inputscale != 1.0) {
+                    float scale = inputscale;
+                    for (size_t k = 0; k < (frames_needed - frames_counter) * nchans_max; ++k )
+                        tmp_buffer[k] *= scale;
+                }
                 result = ebur128_add_frames_float(st, tmp_buffer,
                                                   frames_needed - frames_counter);
                 if (result) abort();
@@ -164,6 +171,11 @@ static void dump_loudness_info(struct filename_list_node *fln, int *ret)
 
                 
             } else {
+                if (inputscale != 1.0) {
+                    float scale = inputscale;
+                    for (size_t k = 0; k < nr_frames_read * nchans_max; ++k )
+                        tmp_buffer[k] *= scale;
+                }
                 result = ebur128_add_frames_float(st, tmp_buffer, nr_frames_read);
                 if (result) abort();
                 updateLevels(nchans_max);
